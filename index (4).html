@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jordens inre krafter – händelseförlopp</title>
+  <style>
+    body {font-family: system-ui, sans-serif; background:#fafafa; color:#1f2937; margin:40px; line-height:1.6;}
+    .step {background:#fff; padding:20px; border-radius:12px; margin-bottom:20px; box-shadow:0 0 10px rgba(0,0,0,0.08);} 
+    textarea {width:100%; height:140px; margin-top:10px; padding:12px; border-radius:8px; border:1px solid #ccc;}
+    .sofar {background:#f1f5f9; padding:10px; border-radius:8px; white-space:pre-wrap;}
+    .terms {display:flex; flex-wrap:wrap; gap:8px;}
+    .chip {background:#eaf2ff; border:1px dashed #b6ccff; color:#0b3a8a; padding:4px 8px; border-radius:999px;}
+    #preview {background:#0b1020; color:#eef2ff; padding:16px; border-radius:12px; min-height:200px; white-space:pre-wrap;}
+    button {margin-top:10px; margin-right:8px; background:#0f172a; color:#fff; border:none; padding:10px 14px; border-radius:8px; cursor:pointer;}
+    button:hover {filter:brightness(1.1);}
+  </style>
+</head>
+<body>
+  <h1>Beskriv ett <em>händelseförlopp</em> om jordens inre krafter</h1>
+  <p>Du ska stegvis beskriva hur jordens inre krafter fungerar och påverkar jordytan. Använd begreppen i varje steg. Texten sparas automatiskt i webbläsaren.</p>
+
+  <div class="terms">
+    <span class="chip">Mantel</span>
+    <span class="chip">Kärna</span>
+    <span class="chip">Jordskorpan</span>
+    <span class="chip">Konvektionsströmmar</span>
+    <span class="chip">Kontinentaldrift</span>
+    <span class="chip">Pangea</span>
+    <span class="chip">Plattor</span>
+    <span class="chip">Nagel</span>
+    <span class="chip">Magma</span>
+  </div>
+
+  <div class="step" id="step1">
+    <h2>1) Jordens lager och uppbyggnad</h2>
+    <p>Använd begreppen <strong>Kärna</strong>, <strong>Mantel</strong> och <strong>Jordskorpan</strong>. Beskriv vad som skiljer lagren åt, hur de hänger ihop och hur värmen från kärnan påverkar de andra lagren. Tänk på att använda sambandsord som “eftersom” och “därför att”.</p>
+    <textarea id="input1" placeholder="Skriv steg 1 här…"></textarea>
+  </div>
+
+  <div class="step" id="step2">
+    <h2>2) Rörelser i manteln</h2>
+    <div class="sofar" id="sofar2">(Texten från steg 1 visas här)</div>
+    <p>Använd begreppen <strong>Konvektionsströmmar</strong>, <strong>Plattor</strong> och <strong>Nagel</strong>. Förklara vad konvektionsströmmar är, hur de påverkar plattorna och hur långsamt plattorna rör sig. Jämför gärna hastigheten med hur snabbt en <strong>nagel</strong> växer. Skriv med egna ord så att någon annan kan förstå.</p>
+    <textarea id="input2" placeholder="Skriv steg 2 här…"></textarea>
+  </div>
+
+  <div class="step" id="step3">
+    <h2>3) Kontinenternas rörelser och jordens utveckling</h2>
+    <div class="sofar" id="sofar3">(Texten från steg 1–2 visas här)</div>
+    <p>Använd begreppen <strong>Kontinentaldrift</strong>, <strong>Pangea</strong> och <strong>Magma</strong>. Förklara hur kontinenterna har rört sig genom historien och hur plattornas rörelser kan orsaka vulkaner och bergskedjor. Visa orsak och följd i ditt resonemang – vad händer först, och vad leder det till?</p>
+    <textarea id="input3" placeholder="Skriv steg 3 här…"></textarea>
+  </div>
+
+  <div class="step" id="step4">
+    <h2>4) Slutlig sammanfattning – finputsa din text</h2>
+    <div class="sofar" id="sofar4">(Texten från steg 1–3 visas här)</div>
+    <p>Läs igenom allt du har skrivit. Kontrollera att du har använt alla begrepp korrekt och att texten hänger ihop logiskt. Förtydliga samband (t.ex. “När detta händer… leder det till att…”). Se till att du har skrivit i hela meningar och att texten förklarar både hur och varför saker händer.</p>
+    <textarea id="input4" placeholder="Skriv din slutliga version här…"></textarea>
+  </div>
+
+  <div id="summary" class="step">
+    <h2>Sluttext – Jordens inre krafter</h2>
+    <div id="preview">Börja skriva i steg 1…</div>
+    <p><strong>Totalt antal ord:</strong> <span id="wordCount">0</span></p>
+    <button onclick="saveProgress()">💾 Spara</button>
+    <button onclick="copyStory()">📋 Kopiera</button>
+    <button onclick="exportText()">⬇️ Ladda ned .txt</button>
+    <button onclick="clearProgress()">🗑️ Rensa</button>
+  </div>
+
+  <script>
+    const fields = [1,2,3,4].map(i=>document.getElementById('input'+i));
+    const sofarBoxes = {2:sofar2,3:sofar3,4:sofar4};
+    const preview = document.getElementById('preview');
+    const wordCountEl = document.getElementById('wordCount');
+    const KEY = i => `geo4_input${i}`;
+
+    window.addEventListener('DOMContentLoaded',()=>{for(let i=1;i<=4;i++){const s=localStorage.getItem(KEY(i));if(s)fields[i-1].value=s;}updateAll();});
+    fields.forEach((el,idx)=>el.addEventListener('input',()=>{localStorage.setItem(KEY(idx+1),el.value);updateAll();}));
+
+    function buildStory(upto){const end=upto||4;return fields.slice(0,end).map(e=>e.value.trim()).filter(Boolean).join('\n\n');}
+    function renderSofar(){for(let s=2;s<=4;s++){if(sofarBoxes[s])sofarBoxes[s].textContent=buildStory(s-1)||'(Inget skrivet ännu.)';}}
+    function renderPreview(){const t=buildStory();preview.textContent=t||'Börja skriva i steg 1…';}
+    function countWords(t){const m=t.match(/\b[\w’'\-åäöÅÄÖ]+\b/g);return m?m.length:0;}
+    function renderWordCount(){wordCountEl.textContent=countWords(buildStory());}
+    function updateAll(){renderSofar();renderPreview();renderWordCount();}
+
+    function saveProgress(){fields.forEach((el,i)=>localStorage.setItem(KEY(i+1),el.value));alert('Sparat i webbläsaren.');}
+    function clearProgress(){if(!confirm('Radera allt sparat arbete?'))return;fields.forEach((el,i)=>{localStorage.removeItem(KEY(i+1));el.value='';});updateAll();}
+    async function copyStory(){const t=buildStory();await navigator.clipboard.writeText(t);alert('Text kopierad.');}
+    function exportText(){const t=buildStory();const b=new Blob([t],{type:'text/plain'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='jordens_inre_krafter.txt';a.click();URL.revokeObjectURL(a.href);}
+  </script>
+</body>
+</html>
